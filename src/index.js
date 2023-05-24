@@ -9,6 +9,15 @@ import {
     withParams,             // middleware: puts params directly on the Request
   } from 'itty-router';
 
+
+const headers = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Content-type": "application/json",
+};
+
+
 // Create a new Router
 const router = Router();
 
@@ -18,17 +27,35 @@ router
     .all('*', withParams) 
 
     // GET and array of quotes
-    .get('/', () => quotes[Math.floor(Math.random() * quotes.length)])
+    .get('/', () => {
+        let random_quote = quotes[Math.floor(Math.random() * quotes.length)];
+        return new Response(JSON.stringify({ quote: random_quote }), {
+            headers: { ...headers },
+        });
+    })
 
     // GET a random quote
-    .get('/quotes', () => quotes)
+    .get('/quotes', () => {
+        return new Response(JSON.stringify(quotes), {
+            headers: { ...headers },
+        });
+    })
 
     // GET an array with <count> quotes
-    .get('quotes/:count', ({ params }) => getRandomQuotes(params.count) || error(404, 'No matches found.'))
+    .get('quotes/:count', ({ params }) => {
+        let random_quote_set = getRandomQuotes(params.count);
+        return new Response(JSON.stringify(random_quote_set) || error(404, 'No matches found.'), {
+            headers: { ...headers },
+        });
+    })
 
     // GET an array of quotes matching <term> without case sensitivity e.g
-    .get('quotes/search/:term', ({ params }) => searchQuotes(params.term) || error(404, 'No matches found.'))
-
+    .get('quotes/search/:term', ({ params }) => {
+        let random_quote_set = searchQuotes(params.term);
+        return new Response(JSON.stringify(random_quote_set) || error(404, 'No matches found.'), {
+            headers: { ...headers },
+        });
+    })
     // 404 for everything else
     .all('*', () => error(404)
 );
@@ -38,5 +65,10 @@ export default {
     fetch: (request, ...args) => router
                                     .handle(request, ...args)
                                     .then(json)    // send as JSON
-                                    .catch(error)  // catch errors
+                                    .catch(error => {
+                                        return new Response(error.toString(), {
+                                            status: 500,
+                                            headers: { ...headers },
+                                        });
+                                    })  // catch errors
 };
