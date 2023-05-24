@@ -1,0 +1,4 @@
+name = "best-boss-quotes-api"
+main = "src/index.js"
+compatibility_date = "2023-05-20"
+

@@ -1,0 +1,17 @@
+{
+  "name": "best-boss-quotes-api",
+  "version": "0.0.0",
+  "author": "Sonya Alekseeva",
+  "description": "A free REST API for random Michael Scott quotes. That what he said 🙌.",
+  "private": true,
+  "scripts": {
+    "start": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "3.0.0"
+  },
+  "dependencies": {
+    "itty-router": "^4.0.0-next.53"
+  }
+}
